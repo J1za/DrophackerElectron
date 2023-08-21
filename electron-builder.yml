@@ -1,0 +1,12 @@
+appId: com.praveenp.drophacker
+productName: MemReFinder: Drophacker
+copyright: Copyright © 2023 Drophacker
+directories:
+  output: dist
+  buildResources: resources
+files:
+  - from: .
+    filter:
+      - package.json
+      - app
+publish: null

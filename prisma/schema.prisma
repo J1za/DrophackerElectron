@@ -1,0 +1,176 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["postgresqlExtensions"]
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model Account {
+  id           String             @id @default(uuid())
+  name         String?
+  privateKey   String             @unique
+  address      String             @unique
+  created_at   DateTime           @default(now())
+  updated_at   DateTime           @updatedAt
+  groupId      String?
+  group        AccountsGroup?     @relation(fields: [groupId], references: [id])
+  coinBalances CoinBalance[]
+  executions   ExecutionAccount[]
+}
+
+model AccountsGroup {
+  id         String    @id @default(uuid())
+  name       String?
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
+  accounts   Account[]
+}
+
+model Provider {
+  id         String  @id @default(uuid())
+  chain      String  @unique
+  url        String
+  gasPrice   String?
+  gasPercent Int?
+}
+
+model Exchange {
+  id          String  @id @default(uuid())
+  name        String  @unique
+  url         String?
+  credentials String  @default("{}")
+}
+
+model Contract {
+  id       String @id @default(uuid())
+  chain    String
+  protocol String
+  name     String
+  address  String
+
+  @@unique([chain, protocol, name])
+}
+
+model Coin {
+  id       String        @id @default(uuid())
+  chain    String
+  symbol   String
+  address  String
+  decimals Int
+  balances CoinBalance[]
+
+  @@unique([chain, symbol])
+  @@unique([chain, address])
+}
+
+model CoinBalance {
+  id        String   @id @default(uuid())
+  balance   String   @default("0")
+  updatedAt DateTime @updatedAt
+  coinId    String
+  address   String
+  account   Account  @relation(fields: [address], references: [address])
+  coin      Coin     @relation(fields: [coinId], references: [id])
+}
+
+model Task {
+  id        String     @id @default(uuid())
+  name      String
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  steps     TaskStep[]
+}
+
+model TaskStep {
+  id         String  @id @default(uuid())
+  taskId     String
+  stepName   String
+  stepNumber Int
+  type       String
+  chain      String?
+  protocol   String?
+  exchange   String?
+  method     String
+  args       String
+  task       Task    @relation(fields: [taskId], references: [id])
+
+  @@unique([taskId, stepNumber])
+}
+
+model Execution {
+  id        String             @id @default(uuid())
+  name      String
+  createdAt DateTime           @default(now())
+  updatedAt DateTime           @updatedAt
+  status    String             @default("Pending")
+  accounts  ExecutionAccount[]
+  steps     ExecutionStep[]
+}
+
+model ExecutionStep {
+  id          String      @id @default(uuid())
+  executionId String
+  stepName    String
+  stepNumber  Int
+  type        String
+  method      String
+  chain       String?
+  protocol    String?
+  exchange    String?
+  args        String
+  execution   Execution   @relation(fields: [executionId], references: [id])
+  states      StepState[]
+}
+
+model ExecutionAccount {
+  id           String      @id @default(uuid())
+  status       String
+  currentStep  Int         @default(0)
+  errorMessage String      @default("")
+  address      String
+  executionId  String
+  execution    Execution   @relation(fields: [executionId], references: [id])
+  account      Account     @relation(fields: [address], references: [address])
+  stepsState   StepState[]
+
+  @@unique([executionId, address])
+}
+
+model StepState {
+  id                 String            @id @default(uuid())
+  createdAt          DateTime          @default(now())
+  updatedAt          DateTime          @updatedAt
+  status             String
+  args               String?
+  logs               String?
+  accountExecutionId String
+  stepId             String
+  previosStepId      String?           @unique
+  currentAction      Int               @default(0)
+  actions            StepActionState[]
+  previosStep        StepState?        @relation("PreviosStep", fields: [previosStepId], references: [id])
+  nextStep           StepState?        @relation("PreviosStep")
+  step               ExecutionStep     @relation(fields: [stepId], references: [id])
+  accountExecution   ExecutionAccount  @relation(fields: [accountExecutionId], references: [id])
+}
+
+model StepActionState {
+  id              String           @id @default(uuid())
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  name            String
+  status          String
+  actionNumber    Int
+  errorMessage    String?
+  logs            String?
+  stepStateId     String
+  previosActionId String?          @unique
+  previosAction   StepActionState? @relation("PreviosStep", fields: [previosActionId], references: [id])
+  nextAction      StepActionState? @relation("PreviosStep")
+  stepState       StepState        @relation(fields: [stepStateId], references: [id])
+
+  @@unique([stepStateId, actionNumber])
+}

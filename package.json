@@ -1,0 +1,120 @@
+{
+  "private": true,
+  "name": "drophacker",
+  "description": "Drophacker",
+  "version": "0.0.1",
+  "author": "Vitaliy Stukalo <workinvs@gmail.com>",
+  "main": "main/index.js",
+  "prisma": {
+    "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
+  },
+  "scripts": {
+    "dev": "tsc -p renderer && next dev renderer",
+    "build": "next build renderer",
+    "start": "next start renderer",
+    "dev:desktop": "npm run build:desktop && electron .",
+    "build:desktop": "npm run clean && npm run build:electron",
+    "dist": "npm run build:desktop && electron-builder",
+    "postinstall": "electron-builder install-app-deps",
+    "clean": "rimraf dist renderer/.next main/*.js main/**/*.js",
+    "build:main": "tsc -p main",
+    "build:renderer": "next build renderer",
+    "build:electron": "npm run build:renderer && npm run build:main"
+  },
+  "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^6.4.0",
+    "@fortawesome/free-regular-svg-icons": "^6.4.0",
+    "@fortawesome/free-solid-svg-icons": "^6.4.0",
+    "@fortawesome/react-fontawesome": "^0.2.0",
+    "@prisma/client": "^4.13.0",
+    "autoprefixer": "^10.4.7",
+    "@typechain/ethers-v5": "^11.0.0",
+    "@types/node": "20.3.1",
+    "@types/react": "18.2.12",
+    "@types/react-dom": "18.2.5",
+    "axios": "^1.2.3",
+    "crypto-js": "^4.1.1",
+    "dotenv": "^16.3.1",
+    "electron-is-dev": "^1.1.0",
+    "electron-serve": "^1.1.0",
+    "electron-store": "^8.1.0",
+    "electron-updater": "^5.3.0",
+    "ethers": "^5.7.2",
+    "feather-icons": "^4.29.0",
+    "file-saver": "^2.0.5",
+    "framer-motion": "^10.12.18",
+    "lodash": "^4.17.21",
+    "next": "13.1.2",
+    "postcss": "^8.4.13",
+    "postcss-nested": "^6.0.1",
+    "react": "18.2.0",
+    "react-dom": "^18.2.0",
+    "react-markdown": "^8.0.5",
+    "sass": "^1.63.6",
+    "tailwindcss": "^3.3.2",
+    "use-deep-compare-effect": "^1.8.1",
+    "web3": "^4.0.2",
+    "webpack-node-externals": "^3.0.0",
+    "workerize-loader": "^2.0.2",
+    "zksync-web3": "^0.14.3"
+  },
+  "devDependencies": {
+    "@headlessui/react": "^1.7.7",
+    "@heroicons/react": "^2.0.13",
+    "@next/font": "13.1.2",
+    "@tailwindcss/line-clamp": "^0.4.2",
+    "@tailwindcss/typography": "^0.5.9",
+    "@types/formidable": "^2.0.5",
+    "@types/lodash": "^4.14.191",
+    "@types/node": "^18.11.18",
+    "@types/pdf-parse": "^1.1.1",
+    "@types/react": "18.0.27",
+    "@types/react-dom": "18.0.10",
+    "electron": "^21.3.3",
+    "electron-builder": "^24.6.3",
+    "eslint": "8.32.0",
+    "eslint-config-next": "13.1.2",
+    "prisma": "^4.13.0",
+    "typescript": "^4.9.4"
+  },
+  "build": {
+    "appId": "com.praveenp.drophacker",
+    "productName": "DropHacker",
+    "files": [
+      "main/*.js",
+      "renderer"
+    ],
+    "extraFiles": [
+      "renderer/next.config.js",
+      "renderer/db.ts"
+    ],
+    "extraResources": [
+      "prisma/**/*",
+      "node_modules/.prisma/**/*",
+      "node_modules/@prisma/client/**/*"
+    ],
+    "mac": {
+      "category": "public.app-category.productivity",
+      "target": [
+        "dmg",
+        "zip"
+      ]
+    },
+    "win": {
+      "target": [
+        "nsis",
+        "zip",
+        "portable"
+      ]
+    },
+    "linux": {
+      "target": [
+        "AppImage",
+        "deb",
+        "rpm",
+        "tar.gz",
+        "zip"
+      ]
+    }
+  }
+}
