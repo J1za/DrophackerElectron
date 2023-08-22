@@ -22,11 +22,12 @@ app.on('ready', async () => {
   })
 
   const mainWindow = new BrowserWindow({
-    width: 800,
-    height: 600,
+    minWidth: 800,
+    minHeight: 650,
+    width: 1000,
+    height: 800,
     webPreferences: {
-      nodeIntegrationInWorker: true,
-      nodeIntegration: true,
+      nodeIntegration: false,
       contextIsolation: false,
     },
   })

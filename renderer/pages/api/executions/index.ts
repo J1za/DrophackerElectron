@@ -77,8 +77,6 @@ export default async function handler(req, res) {
         },
       });
 
-      revalidate(req, tag);
-
       const newSteps = [];
       for (let i = 0; i < steps.length; i++) {
         const step = steps[i];

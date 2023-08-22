@@ -25,8 +25,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       const exchanges = req.body as Exchange[];
       console.log(exchanges);
 
-      revalidate(req, 'exchange');
-
       const newValues = [];
       for (const exchange of exchanges) {
         let newValue;

@@ -20,8 +20,6 @@ export default async function handler(req, res) {
         stepId: string;
       };
 
-      revalidate(req, tag);
-
       switch (method) {
         case EExecutionStepStateMethods.UPDATE_STATUS:
           for (const acc of accounts) {
@@ -40,7 +38,6 @@ export default async function handler(req, res) {
           throw new Error(`Unknown Method ${method}`);
       }
 
-      revalidate(req, tag);
       return res.status(200).json({ success: true });
     } catch (e) {
       console.error(e);

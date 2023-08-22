@@ -1,5 +1,5 @@
-import { IContract } from "@/types";
-import { EChains, EProtocols, EProtocolNames } from "@/types/enum";
+import { IContract } from "../../renderer/types";
+import { EChains, EProtocols, EProtocolNames } from "../../renderer/types/enum";
 
 export const contractsSeed: Array<IContract> = [
     // * SYNC_SWAP

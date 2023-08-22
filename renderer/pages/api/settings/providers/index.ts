@@ -24,7 +24,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       const providers = req.body as IProvider[];
       console.log(providers);
 
-      revalidate(req, 'providers');
       const newProviders = [];
       for (const provider of providers) {
         let newProv;

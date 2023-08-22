@@ -1,4 +1,4 @@
-import { EChains, EExchanges, EMethods, EProtocols, EStepType } from "@/types/enum";
+import { EChains, EExchanges, EMethods, EProtocols, EStepType } from "../../renderer/types/enum";
 
 export const tasksSeed = [
   {
