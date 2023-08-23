@@ -15,7 +15,6 @@ import { autoUpdater } from 'electron-updater'
 // @ts-ignore
 let updateInterval = null;
 let updateCheck = false;
-let updateFound = false;
 let updateNotAvailable = false;
 
 const nextApp = next({ dev: isDev, dir: app.getAppPath() + '/renderer' });
@@ -52,17 +51,21 @@ app.on('ready', async () => {
   updateInterval = setInterval(() => autoUpdater.checkForUpdates(), 600000);
 });
 
+// Quit the app once all windows are closed
+app.on('window-all-closed', app.quit)
+
 autoUpdater.on("update-available", (_event) => {
   const dialogOpts = {
     type: 'info',
     buttons: ['Ok'],
     title: `Update Available`,
-    detail: `A new version download started.`
+    detail: `A new version should download started or check telegram channel`
   } as any;
 
   if (!updateCheck) {
     updateInterval = null;
     dialog.showMessageBox(dialogOpts);
+    autoUpdater.quitAndInstall();
     updateCheck = true;
   }
 });
@@ -74,15 +77,9 @@ autoUpdater.on("update-downloaded", (_event) => {
     title: "Application Update",
     detail: "A new version has been downloaded. Restart the application to apply the updates."
   } as any;
-  dialog.showMessageBox(dialogOpts);
-  if (!updateFound) {
-    updateInterval = null;
-    updateFound = true;
-
-    setTimeout(() => {
-      autoUpdater.quitAndInstall();
-    }, 3500);
-  }
+  dialog.showMessageBox(dialogOpts).then((returnValue) => {
+    if (returnValue.response === 0) autoUpdater.quitAndInstall()
+  })
 });
 
 autoUpdater.on('download-progress', (progressObj) => {
@@ -109,6 +106,3 @@ autoUpdater.on("update-not-available", (_event) => {
     dialog.showMessageBox(dialogOpts);
   }
 });
-
-// Quit the app once all windows are closed
-app.on('window-all-closed', app.quit)

@@ -17,7 +17,6 @@ const electron_updater_1 = require("electron-updater");
 // @ts-ignore
 let updateInterval = null;
 let updateCheck = false;
-let updateFound = false;
 let updateNotAvailable = false;
 const nextApp = (0, next_1.default)({ dev: electron_is_dev_1.default, dir: electron_1.app.getAppPath() + '/renderer' });
 const handle = nextApp.getRequestHandler();
@@ -47,9 +46,8 @@ electron_1.app.on('ready', async () => {
     electron_updater_1.autoUpdater.checkForUpdates();
     updateInterval = setInterval(() => electron_updater_1.autoUpdater.checkForUpdates(), 600000);
 });
-electron_1.app.on('window-all-closed', () => {
-    electron_1.app.quit();
-});
+// Quit the app once all windows are closed
+electron_1.app.on('window-all-closed', electron_1.app.quit);
 electron_updater_1.autoUpdater.on("update-available", (_event) => {
     const dialogOpts = {
         type: 'info',
@@ -70,14 +68,10 @@ electron_updater_1.autoUpdater.on("update-downloaded", (_event) => {
         title: "Application Update",
         detail: "A new version has been downloaded. Restart the application to apply the updates."
     };
-    electron_1.dialog.showMessageBox(dialogOpts);
-    if (!updateFound) {
-        updateInterval = null;
-        updateFound = true;
-        setTimeout(() => {
+    electron_1.dialog.showMessageBox(dialogOpts).then((returnValue) => {
+        if (returnValue.response === 0)
             electron_updater_1.autoUpdater.quitAndInstall();
-        }, 3500);
-    }
+    });
 });
 electron_updater_1.autoUpdater.on('download-progress', (progressObj) => {
     const dialogOpts = {
@@ -101,5 +95,3 @@ electron_updater_1.autoUpdater.on("update-not-available", (_event) => {
         electron_1.dialog.showMessageBox(dialogOpts);
     }
 });
-// Quit the app once all windows are closed
-electron_1.app.on('window-all-closed', electron_1.app.quit);

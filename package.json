@@ -2,16 +2,15 @@
   "private": true,
   "name": "drophacker",
   "description": "Drophacker",
-  "version": "0.0.1",
+  "version": "0.0.4",
   "author": "Vitaliy Stukalo <workinvs@gmail.com>",
   "main": "main/index.js",
   "prisma": {
     "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
   },
-  "repository": "https://github.com/J1za/DropHackerRelease",
-  "publish": {
-    "provider": "github",
-    "releaseType": "release"
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/J1za/DropHackerRelease"
   },
   "scripts": {
     "dev": "npm run build:electron && electron .",
@@ -19,11 +18,11 @@
     "start": "next start renderer",
     "dev:desktop": "npm run build:desktop && electron .",
     "build:desktop": "npm run clean && npm run build:electron",
-    "dist-win": "npm run build:desktop && electron-builder -win --ia32 --x64",
-    "dist-osx": "npm run build:desktop && electron-builder --mac --x64",
-    "dist-linux": "npm run build:desktop && electron-builder --linux --ia32 --x64",
-    "postinstall": "electron-builder install-app-deps",
+    "dist-win": "npm run build:desktop && electron-builder --win --publish always",
+    "dist-osx": "npm run build:desktop && electron-builder --mac --publish always",
+    "dist-linux": "npm run build:desktop && electron-builder --linux --publish always",
     "clean": "rimraf dist renderer/.next main/*.js main/**/*.js",
+    "postinstall": "electron-builder install-app-deps",
     "build:main": "tsc -p main",
     "build:renderer": "next build renderer",
     "build:electron": "npm run build:renderer && npm run build:main"
@@ -105,11 +104,9 @@
       "node_modules/@fortawesome"
     ],
     "mac": {
-      "publish": {
-        "provider": "github",
-        "owner": "J1za",
-        "repo": "DropHackerRelease"
-      },
+      "publish": [
+        "github"
+      ],
       "category": "com.drophacker.application",
       "target": {
         "target": "default",
@@ -120,11 +117,9 @@
       }
     },
     "win": {
-      "publish": {
-        "provider": "github",
-        "owner": "J1za",
-        "repo": "DropHackerRelease"
-      }
+      "publish": [
+        "github"
+      ]
     },
     "linux": {
       "target": [
