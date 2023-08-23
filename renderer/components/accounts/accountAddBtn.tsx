@@ -16,12 +16,6 @@ export default function AccountAddBtn() {
   const toggleRef = useRef((name: any) => {}); // Accounts created via worker, and it doesn't see toggle, so need to store toggle in Ref to update
 
   useEffect(() => {
-    // Not the best solution
-    console.log("🔄 Refresh Page");
-    // router.refresh();
-  }, [isBool.refreshPage]);
-
-  useEffect(() => {
     // Accounts created via worker, and it doesn't see toggle, so need to store toggle in Ref to update
     toggleRef.current = toggle;
   }, []);
@@ -51,6 +45,7 @@ export default function AccountAddBtn() {
             "/api/accounts",
             JSON.stringify({ name: groupName, accounts })
           );
+          router.refresh();
           console.log("Accounts to Create", newGroup);
 
           toggleRef.current("refreshPage");

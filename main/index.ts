@@ -30,9 +30,9 @@ app.on('ready', async () => {
       nodeIntegration: false,
       contextIsolation: false,
     },
-  })
-
-  mainWindow.loadURL(`http://localhost:${port}/`)
+  });
+  mainWindow.setMenu(null);
+  mainWindow.loadURL(`http://localhost:${port}/`);
 })
 
 // Quit the app once all windows are closed

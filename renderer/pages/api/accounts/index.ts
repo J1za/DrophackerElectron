@@ -28,26 +28,32 @@ export default async function handler(req, res) {
         }
     } else if (method === 'POST') {
         try {
-            const { id, name, accounts = [] } = req.body as IAccountGroup;
+            const { id, name, accounts = [] } = await JSON.parse(req.body) as IAccountGroup;
 
             const uniqueAccounts: Record<string, Account> = {};
             for (const acc of accounts) {
                 const uniqueAcc = uniqueAccounts?.[acc.address];
                 if (uniqueAcc) {
-                    throw new Error(`Duplicated accounts: ${uniqueAcc.name} and ${acc.name}. Have the same address: ${acc.address}`);
+                    throw new Error(
+                        `Duplicated accounts: ${uniqueAcc.name} and ${acc.name}. Have the same address: ${acc.address}`
+                    );
                 } else {
                     uniqueAccounts[acc.address] = acc;
                 }
 
+                // Check if account already exists
                 const dbAcc = await prisma.account.findFirst({
                     where: { address: acc.address },
                     select: { group: true, name: true, address: true },
                 });
                 if (dbAcc) {
-                    throw new Error(`Account ${acc.address} already exists in group '${dbAcc.group?.name}' with name '${dbAcc.name}'`);
+                    throw new Error(
+                        `Account ${acc.address} already exists in group '${dbAcc.group?.name}' with name '${dbAcc.name}'`
+                    );
                 }
             }
 
+            // CREATE GROUP
             let group: AccountsGroup | { id: string | undefined } = { id: undefined };
             if (!id) {
                 group = await prisma.accountsGroup.create({
@@ -59,6 +65,7 @@ export default async function handler(req, res) {
                 group.id = id;
             }
 
+            // CREATE ACCOUNTS
             const newAccounts = [];
             if (!group.id) {
                 throw new Error(
@@ -74,12 +81,15 @@ export default async function handler(req, res) {
                         },
                     });
                     newAccounts.push(newAcc);
-                } catch (e) { }
+                } catch (e) {
+                    // Error handling for individual account creation
+                }
             }
 
             return res.status(200).json({ ...group, accounts: newAccounts });
         } catch (e) {
-            return res.status(500).json(handleApiErrorMessage(e));
+            const errorMessage = handleApiErrorMessage(e);
+            return res.status(500).json(errorMessage);
         } finally {
             await prisma.$disconnect();
         }
