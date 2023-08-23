@@ -8,13 +8,20 @@
   "prisma": {
     "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
   },
+  "repository": "https://github.com/J1za/DropHackerRelease",
+  "publish": {
+    "provider": "github",
+    "releaseType": "release"
+  },
   "scripts": {
-    "dev": "tsc -p renderer && next dev renderer",
+    "dev": "npm run build:electron && electron .",
     "build": "next build renderer",
     "start": "next start renderer",
     "dev:desktop": "npm run build:desktop && electron .",
     "build:desktop": "npm run clean && npm run build:electron",
-    "dist": "npm run build:desktop && electron-builder",
+    "dist-win": "npm run build:desktop && electron-builder -win --ia32 --x64",
+    "dist-osx": "npm run build:desktop && electron-builder --mac --x64",
+    "dist-linux": "npm run build:desktop && electron-builder --linux --ia32 --x64",
     "postinstall": "electron-builder install-app-deps",
     "clean": "rimraf dist renderer/.next main/*.js main/**/*.js",
     "build:main": "tsc -p main",
@@ -27,15 +34,17 @@
     "@fortawesome/free-solid-svg-icons": "^6.4.0",
     "@fortawesome/react-fontawesome": "^0.2.0",
     "@prisma/client": "^4.13.0",
-    "autoprefixer": "^10.4.7",
     "@typechain/ethers-v5": "^11.0.0",
     "@types/node": "20.3.1",
     "@types/react": "18.2.12",
     "@types/react-dom": "18.2.5",
+    "autoprefixer": "^10.4.7",
     "axios": "^1.2.3",
     "crypto-js": "^4.1.1",
     "dotenv": "^16.3.1",
     "electron-is-dev": "^1.1.0",
+    "electron-log": "^4.4.8",
+    "electron-next": "^3.1.5",
     "electron-serve": "^1.1.0",
     "electron-store": "^8.1.0",
     "electron-updater": "^5.3.0",
@@ -47,6 +56,7 @@
     "next": "13.1.2",
     "postcss": "^8.4.13",
     "postcss-nested": "^6.0.1",
+    "prisma": "^4.13.0",
     "react": "18.2.0",
     "react-dom": "^18.2.0",
     "react-markdown": "^8.0.5",
@@ -74,7 +84,6 @@
     "electron-builder": "^23.6.0",
     "eslint": "8.32.0",
     "eslint-config-next": "13.1.2",
-    "prisma": "^4.13.0",
     "typescript": "^4.9.4"
   },
   "build": {
@@ -91,9 +100,16 @@
     "extraResources": [
       "prisma/**/*",
       "node_modules/.prisma/**/*",
-      "node_modules/@prisma/client/**/*"
+      "node_modules/@prisma/client/**/*",
+      "node_modules/framer-motion",
+      "node_modules/@fortawesome"
     ],
     "mac": {
+      "publish": {
+        "provider": "github",
+        "owner": "J1za",
+        "repo": "DropHackerRelease"
+      },
       "category": "com.drophacker.application",
       "target": {
         "target": "default",
@@ -104,14 +120,11 @@
       }
     },
     "win": {
-      "target": [
-        {
-          "target": "nsis",
-          "arch": [
-            "x64"
-          ]
-        }
-      ]
+      "publish": {
+        "provider": "github",
+        "owner": "J1za",
+        "repo": "DropHackerRelease"
+      }
     },
     "linux": {
       "target": [

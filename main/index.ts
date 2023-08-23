@@ -1,18 +1,30 @@
 // Packages
-import { BrowserWindow, app } from 'electron'
+/* tslint:disable-next-line */
+// Native
+import { join } from 'path'
+
+// Packages
+import { BrowserWindow, app, dialog } from 'electron'
 import isDev from 'electron-is-dev'
 
 import { createServer } from 'http'
 import { parse } from 'url'
 import next from 'next'
+import { autoUpdater } from 'electron-updater'
 
-const nextApp = next({ dev: isDev, dir: app.getAppPath() + '/renderer' })
-const handle = nextApp.getRequestHandler()
+// @ts-ignore
+let updateInterval = null;
+let updateCheck = false;
+let updateFound = false;
+let updateNotAvailable = false;
+
+const nextApp = next({ dev: isDev, dir: app.getAppPath() + '/renderer' });
+const handle = nextApp.getRequestHandler();
 
 // Prepare the renderer once the app is ready
 app.on('ready', async () => {
   await nextApp.prepare();
-  const port = process.argv[2] || 3000;
+  const port = 3000;
 
   createServer((req: any, res: any) => {
     const parsedUrl = parse(req.url, true)
@@ -29,11 +41,74 @@ app.on('ready', async () => {
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: false,
+      preload: join(__dirname, 'preload.js'),
     },
   });
+
   mainWindow.setMenu(null);
-  mainWindow.loadURL(`http://localhost:${port}/`);
+  await mainWindow.loadURL(`http://localhost:${port}`);
+
+  autoUpdater.checkForUpdates();
+  updateInterval = setInterval(() => autoUpdater.checkForUpdates(), 600000);
+});
+
+autoUpdater.on("update-available", (_event) => {
+  const dialogOpts = {
+    type: 'info',
+    buttons: ['Ok'],
+    title: `Update Available`,
+    detail: `A new version download started.`
+  } as any;
+
+  if (!updateCheck) {
+    updateInterval = null;
+    dialog.showMessageBox(dialogOpts);
+    updateCheck = true;
+  }
+});
+
+autoUpdater.on("update-downloaded", (_event) => {
+  const dialogOpts = {
+    type: "info",
+    buttons: ["Restart", "Later"],
+    title: "Application Update",
+    detail: "A new version has been downloaded. Restart the application to apply the updates."
+  } as any;
+  dialog.showMessageBox(dialogOpts);
+  if (!updateFound) {
+    updateInterval = null;
+    updateFound = true;
+
+    setTimeout(() => {
+      autoUpdater.quitAndInstall();
+    }, 3500);
+  }
+});
+
+autoUpdater.on('download-progress', (progressObj) => {
+  const dialogOpts = {
+    type: "info",
+    buttons: ["Ok"],
+    title: 'Download speed: ' + progressObj.bytesPerSecond,
+    detail: 'Downloaded ' + progressObj.percent + '%'
+  } as any;
+  dialog.showMessageBox(dialogOpts);
 })
+
+autoUpdater.on("update-not-available", (_event) => {
+  const dialogOpts = {
+    type: 'info',
+    buttons: ['Ok'],
+    title: `Update Not available`,
+    message: "A message!",
+    detail: `Update Not available`
+  } as any;
+
+  if (!updateNotAvailable) {
+    updateNotAvailable = true;
+    dialog.showMessageBox(dialogOpts);
+  }
+});
 
 // Quit the app once all windows are closed
 app.on('window-all-closed', app.quit)
