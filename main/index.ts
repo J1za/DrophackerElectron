@@ -48,7 +48,6 @@ app.on('ready', async () => {
   await mainWindow.loadURL(`http://localhost:${port}`);
 
   autoUpdater.checkForUpdates();
-  updateInterval = setInterval(() => autoUpdater.checkForUpdates(), 600000);
 });
 
 // Quit the app once all windows are closed

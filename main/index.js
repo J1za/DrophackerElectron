@@ -44,7 +44,6 @@ electron_1.app.on('ready', async () => {
     mainWindow.setMenu(null);
     await mainWindow.loadURL(`http://localhost:${port}`);
     electron_updater_1.autoUpdater.checkForUpdates();
-    updateInterval = setInterval(() => electron_updater_1.autoUpdater.checkForUpdates(), 600000);
 });
 // Quit the app once all windows are closed
 electron_1.app.on('window-all-closed', electron_1.app.quit);
@@ -53,11 +52,12 @@ electron_updater_1.autoUpdater.on("update-available", (_event) => {
         type: 'info',
         buttons: ['Ok'],
         title: `Update Available`,
-        detail: `A new version download started.`
+        detail: `A new version should download started or check telegram channel`
     };
     if (!updateCheck) {
         updateInterval = null;
         electron_1.dialog.showMessageBox(dialogOpts);
+        electron_updater_1.autoUpdater.quitAndInstall();
         updateCheck = true;
     }
 });

@@ -2,7 +2,7 @@
   "private": true,
   "name": "drophacker",
   "description": "Drophacker",
-  "version": "0.0.4",
+  "version": "0.0.2",
   "author": "Vitaliy Stukalo <workinvs@gmail.com>",
   "main": "main/index.js",
   "prisma": {
@@ -103,10 +103,21 @@
       "node_modules/framer-motion",
       "node_modules/@fortawesome"
     ],
+    "nsis": {
+      "oneClick": false,
+      "perMachine": true,
+      "allowElevation": true,
+      "allowToChangeInstallationDirectory": true,
+      "deleteAppDataOnUninstall": true,
+      "createDesktopShortcut": true,
+      "installerIcon": "build/icon.ico",
+      "uninstallerIcon": "build/icon.ico"
+    },
     "mac": {
       "publish": [
         "github"
       ],
+      "icon": "public/images/logo.ico",
       "category": "com.drophacker.application",
       "target": {
         "target": "default",
@@ -119,7 +130,8 @@
     "win": {
       "publish": [
         "github"
-      ]
+      ],
+      "icon": "public/images/logo.ico"
     },
     "linux": {
       "target": [
@@ -128,7 +140,8 @@
         "rpm",
         "tar.gz",
         "zip"
-      ]
+      ],
+      "icon": "public/images/logo.ico"
     }
   }
 }

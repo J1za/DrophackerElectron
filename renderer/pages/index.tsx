@@ -23,7 +23,7 @@ function Home() {
             <Link
               target="_blank"
               href="https://t.me/hash4cash_links"
-              className="text-indigo-500 inline-flex gap-2 mt-3 text-lg items-center"
+              className="inline-flex items-center gap-2 mt-3 text-lg text-indigo-500"
             >
               <svg
                 className="w-8"
