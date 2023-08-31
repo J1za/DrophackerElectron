@@ -110,15 +110,12 @@
       "allowElevation": true,
       "allowToChangeInstallationDirectory": true,
       "deleteAppDataOnUninstall": true,
-      "createDesktopShortcut": true,
-      "installerIcon": "build/icon.ico",
-      "uninstallerIcon": "build/icon.ico"
+      "createDesktopShortcut": true
     },
     "mac": {
       "publish": [
         "github"
       ],
-      "icon": "public/images/logo.ico",
       "category": "com.drophacker.application",
       "target": {
         "target": "default",
@@ -131,8 +128,7 @@
     "win": {
       "publish": [
         "github"
-      ],
-      "icon": "public/images/logo.ico"
+      ]
     },
     "linux": {
       "target": [
@@ -141,8 +137,7 @@
         "rpm",
         "tar.gz",
         "zip"
-      ],
-      "icon": "public/images/logo.ico"
+      ]
     }
   }
 }
