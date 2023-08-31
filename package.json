@@ -98,11 +98,7 @@
     ],
     "extraResources": [
       "prisma/**/*",
-      "node_modules/react",
-      "node_modules/.prisma/**/*",
-      "node_modules/@prisma/client/**/*",
-      "node_modules/framer-motion",
-      "node_modules/@fortawesome"
+      "node_modules/**/*"
     ],
     "nsis": {
       "oneClick": false,
