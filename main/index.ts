@@ -1,9 +1,4 @@
 // Packages
-/* tslint:disable-next-line */
-// Native
-import { join } from 'path'
-
-// Packages
 import { BrowserWindow, app, dialog } from 'electron'
 import isDev from 'electron-is-dev'
 
@@ -15,15 +10,17 @@ import { autoUpdater } from 'electron-updater'
 // @ts-ignore
 let updateInterval = null;
 let updateCheck = false;
+let updateFound = false;
 let updateNotAvailable = false;
 
-const nextApp = next({ dev: isDev, dir: app.getAppPath() + '/renderer' });
-const handle = nextApp.getRequestHandler();
 
 // Prepare the renderer once the app is ready
 app.on('ready', async () => {
+  const nextApp = next({ dev: isDev, dir: app.getAppPath() + '/renderer' });
+  const handle = nextApp.getRequestHandler();
+
   await nextApp.prepare();
-  const port = 3000;
+  const port = 3001;
 
   createServer((req: any, res: any) => {
     const parsedUrl = parse(req.url, true)
@@ -40,18 +37,16 @@ app.on('ready', async () => {
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: false,
-      preload: join(__dirname, 'preload.js'),
     },
   });
 
-  mainWindow.setMenu(null);
+  // mainWindow.setMenu(null);
+  mainWindow.webContents.openDevTools();
   await mainWindow.loadURL(`http://localhost:${port}`);
 
   autoUpdater.checkForUpdates();
+  updateInterval = setInterval(() => autoUpdater.checkForUpdates(), 600000);
 });
-
-// Quit the app once all windows are closed
-app.on('window-all-closed', app.quit)
 
 autoUpdater.on("update-available", (_event) => {
   const dialogOpts = {
@@ -76,9 +71,15 @@ autoUpdater.on("update-downloaded", (_event) => {
     title: "Application Update",
     detail: "A new version has been downloaded. Restart the application to apply the updates."
   } as any;
-  dialog.showMessageBox(dialogOpts).then((returnValue) => {
-    if (returnValue.response === 0) autoUpdater.quitAndInstall()
-  })
+  dialog.showMessageBox(dialogOpts);
+  if (!updateFound) {
+    updateInterval = null;
+    updateFound = true;
+
+    setTimeout(() => {
+      autoUpdater.quitAndInstall();
+    }, 3500);
+  }
 });
 
 autoUpdater.on('download-progress', (progressObj) => {
@@ -105,3 +106,6 @@ autoUpdater.on("update-not-available", (_event) => {
     dialog.showMessageBox(dialogOpts);
   }
 });
+
+// Quit the app once all windows are closed
+app.on('window-all-closed', app.quit)
