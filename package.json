@@ -15,7 +15,7 @@
     "dev:desktop": "npm run build:desktop && electron .",
     "build:desktop": "npm run clean && npm run build:electron",
     "dist-win": "npm run build:desktop && electron-builder --win",
-    "dist-osx": "electron-builder --mac --x64",
+    "dist-osx": "npm run build:desktop && electron-builder --mac --x64",
     "dist-linux": "npm run build:desktop && electron-builder --linux --ia32 --x64",
     "clean": "rimraf dist renderer/.next main/*.js main/**/*.js",
     "postinstall": "electron-builder install-app-deps",
