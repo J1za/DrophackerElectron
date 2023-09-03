@@ -13,7 +13,6 @@ import { apiMethodRequest } from "@/utils/apiRequest";
 import { useRouter } from "next/navigation";
 import { ModalConfirm } from "@/components/modals/confirmModal";
 import { Account } from "@prisma/client";
-import { motion } from "framer-motion";
 
 export function TaskContainer({
   task,
@@ -168,16 +167,7 @@ export function TaskContainer({
   // };
   return (
     <>
-      <motion.div
-        initial={{ opacity: 0, y: 60 }}
-        animate={{
-          opacity: 1,
-          y: 0,
-          transition: { delay: index * 0.2, duration: 0.4, ease: "linear" },
-        }}
-        exit={{ opacity: 0, y: -20 }}
-        className="card-container task drop-shadow-lg"
-      >
+      <div className="card-container task drop-shadow-lg">
         <div className="header">
           <h3 className="mb-2 text-2xl font-bold">
             {taskFns.setKey("name").getValue()}
@@ -236,7 +226,7 @@ export function TaskContainer({
             );
           })
         )}
-      </motion.div>
+      </div>
       {bools.displayStep && (
         <ModalStepName
           title={stepModalTittle}

@@ -10,7 +10,6 @@ import { useObjectBool } from "@/hooks/useObjectBool";
 import { apiMethodRequest } from "@/utils/apiRequest";
 import { ModalConfirm } from "@/components/modals/confirmModal";
 import { useRouter } from "next/navigation";
-import { motion } from "framer-motion";
 import ModalGroupName from "./modalGroupName";
 
 export function GroupContainer({
@@ -163,20 +162,7 @@ export function GroupContainer({
 
   return (
     <>
-      <motion.div
-        initial={{ opacity: 0, y: 60 }}
-        animate={{
-          opacity: 1,
-          y: 0,
-          transition: {
-            delay: index * 0.2,
-            duration: 0.3,
-            delayChildren: index * 1,
-          },
-        }}
-        exit={{ opacity: 0, y: -20 }}
-        className="card-container settings drop-shadow-xl"
-      >
+      <div className="card-container settings drop-shadow-xl">
         <div
           className="flex items-center flex-inline"
           style={{ justifyContent: "space-between" }}
@@ -242,7 +228,7 @@ export function GroupContainer({
             totalPages={Math.ceil(accounts.length / maxPerPage)}
           />
         </div>
-      </motion.div>
+      </div>
       {bools.display && (
         <ModalCreateAccounts
           createGroup={false}

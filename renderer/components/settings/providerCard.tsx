@@ -1,13 +1,9 @@
 import { InputTextDropDown } from "@/components/inputs/inputTextDropDown";
-import Spinner from "@/components/spinner";
 import { EStatuses, IProvider } from "@/types";
 import { BigNumber, ethers, utils } from "ethers";
 import React, { useEffect, useState } from "react";
 import { debounce } from "lodash";
-import { useObject } from "@/hooks/useObject";
 import { UseNestedObject } from "@/hooks/useNestedObject";
-import { motion } from "framer-motion";
-import { getStatusColor } from "@/providers/utils/getStatusColor";
 import BtnStatusColor from "@/components/btns/btnStatusColor";
 
 export function ProviderCard({
@@ -82,16 +78,7 @@ export function ProviderCard({
     // return (_gasPrice * numberGas).toFixed(2)
   };
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{
-        opacity: 1,
-        y: 0,
-        transition: { delay: index * 0.2, duration: 0.4, ease: "linear" },
-      }}
-      exit={{ opacity: 0, y: -20 }}
-      className="card-container settings drop-shadow-lg"
-    >
+    <div className="card-container settings drop-shadow-lg">
       <div className="relative flex items-center justify-between flex-inline">
         <h3 className="text-xl font-bold">{provider?.chain}</h3>
         <div className="absolute text-gray-600 transform -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2">
@@ -153,6 +140,6 @@ export function ProviderCard({
           btnStyle={{ minWidth: "110px" }}
         />
       </div>
-    </motion.div>
+    </div>
   );
 }

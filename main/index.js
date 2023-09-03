@@ -9,16 +9,15 @@ const electron_is_dev_1 = __importDefault(require("electron-is-dev"));
 const http_1 = require("http");
 const url_1 = require("url");
 const next_1 = __importDefault(require("next"));
-const electron_updater_1 = require("electron-updater");
 // @ts-ignore
 let updateInterval = null;
-let updateCheck = false;
-let updateFound = false;
-let updateNotAvailable = false;
+// let updateCheck = false;
+// let updateFound = false;
+// let updateNotAvailable = false;
+const nextApp = (0, next_1.default)({ dev: electron_is_dev_1.default, dir: electron_1.app.getAppPath() + '/renderer' });
+const handle = nextApp.getRequestHandler();
 // Prepare the renderer once the app is ready
 electron_1.app.on('ready', async () => {
-    const nextApp = (0, next_1.default)({ dev: electron_is_dev_1.default, dir: electron_1.app.getAppPath() + '/renderer' });
-    const handle = nextApp.getRequestHandler();
     await nextApp.prepare();
     const port = 3001;
     (0, http_1.createServer)((req, res) => {
@@ -37,63 +36,63 @@ electron_1.app.on('ready', async () => {
             contextIsolation: false,
         },
     });
-    // mainWindow.setMenu(null);
-    mainWindow.webContents.openDevTools();
+    mainWindow.setMenu(null);
+    // mainWindow.webContents.openDevTools();
     await mainWindow.loadURL(`http://localhost:${port}`);
-    electron_updater_1.autoUpdater.checkForUpdates();
-    updateInterval = setInterval(() => electron_updater_1.autoUpdater.checkForUpdates(), 600000);
+    // autoUpdater.checkForUpdates();
+    // updateInterval = setInterval(() => autoUpdater.checkForUpdates(), 600000);
 });
-electron_updater_1.autoUpdater.on("update-available", (_event) => {
-    const dialogOpts = {
-        type: 'info',
-        buttons: ['Ok'],
-        title: `Update Available`,
-        detail: `A new version should download started or check telegram channel`
-    };
-    if (!updateCheck) {
-        updateInterval = null;
-        electron_1.dialog.showMessageBox(dialogOpts);
-        electron_updater_1.autoUpdater.quitAndInstall();
-        updateCheck = true;
-    }
-});
-electron_updater_1.autoUpdater.on("update-downloaded", (_event) => {
-    const dialogOpts = {
-        type: "info",
-        buttons: ["Restart", "Later"],
-        title: "Application Update",
-        detail: "A new version has been downloaded. Restart the application to apply the updates."
-    };
-    electron_1.dialog.showMessageBox(dialogOpts);
-    if (!updateFound) {
-        updateInterval = null;
-        updateFound = true;
-        setTimeout(() => {
-            electron_updater_1.autoUpdater.quitAndInstall();
-        }, 3500);
-    }
-});
-electron_updater_1.autoUpdater.on('download-progress', (progressObj) => {
-    const dialogOpts = {
-        type: "info",
-        buttons: ["Ok"],
-        title: 'Download speed: ' + progressObj.bytesPerSecond,
-        detail: 'Downloaded ' + progressObj.percent + '%'
-    };
-    electron_1.dialog.showMessageBox(dialogOpts);
-});
-electron_updater_1.autoUpdater.on("update-not-available", (_event) => {
-    const dialogOpts = {
-        type: 'info',
-        buttons: ['Ok'],
-        title: `Update Not available`,
-        message: "A message!",
-        detail: `Update Not available`
-    };
-    if (!updateNotAvailable) {
-        updateNotAvailable = true;
-        electron_1.dialog.showMessageBox(dialogOpts);
-    }
-});
+// autoUpdater.on("update-available", (_event) => {
+//   const dialogOpts = {
+//     type: 'info',
+//     buttons: ['Ok'],
+//     title: `Update Available`,
+//     detail: `A new version should download started or check telegram channel`
+//   } as any;
+//   if (!updateCheck) {
+//     updateInterval = null;
+//     dialog.showMessageBox(dialogOpts);
+//     autoUpdater.quitAndInstall();
+//     updateCheck = true;
+//   }
+// });
+// autoUpdater.on("update-downloaded", (_event) => {
+//   const dialogOpts = {
+//     type: "info",
+//     buttons: ["Restart", "Later"],
+//     title: "Application Update",
+//     detail: "A new version has been downloaded. Restart the application to apply the updates."
+//   } as any;
+//   dialog.showMessageBox(dialogOpts);
+//   if (!updateFound) {
+//     updateInterval = null;
+//     updateFound = true;
+//     setTimeout(() => {
+//       autoUpdater.quitAndInstall();
+//     }, 3500);
+//   }
+// });
+// autoUpdater.on('download-progress', (progressObj) => {
+//   const dialogOpts = {
+//     type: "info",
+//     buttons: ["Ok"],
+//     title: 'Download speed: ' + progressObj.bytesPerSecond,
+//     detail: 'Downloaded ' + progressObj.percent + '%'
+//   } as any;
+//   dialog.showMessageBox(dialogOpts);
+// })
+// autoUpdater.on("update-not-available", (_event) => {
+//   const dialogOpts = {
+//     type: 'info',
+//     buttons: ['Ok'],
+//     title: `Update Not available`,
+//     message: "A message!",
+//     detail: `Update Not available`
+//   } as any;
+//   if (!updateNotAvailable) {
+//     updateNotAvailable = true;
+//     dialog.showMessageBox(dialogOpts);
+//   }
+// });
 // Quit the app once all windows are closed
 electron_1.app.on('window-all-closed', electron_1.app.quit);

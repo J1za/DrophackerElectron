@@ -5,7 +5,6 @@ import { useState } from "react";
 import { ExecutionAccount } from "./ExecutionAccount";
 import { BtnRegular } from "@/components/btns/BtnRegular";
 import { ExecutionAccounts } from "./ExecutionAccounts";
-import { motion } from "framer-motion";
 
 export function ExecutionCard({
   execution,
@@ -17,16 +16,7 @@ export function ExecutionCard({
   const [isStep, setIsStep] = useState(true);
   console.log(execution);
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 60 }}
-      animate={{
-        opacity: 1,
-        y: 0,
-        transition: { delay: index * 0.2, duration: 0.4, ease: "linear" },
-      }}
-      exit={{ opacity: 0, y: -30 }}
-      className="card-container execution drop-shadow-lg"
-    >
+    <div className="card-container execution drop-shadow-lg">
       {/* CARD HEADER */}
       <ExecutionCardHeader execution={execution} />
       <div className="pb-2">
@@ -67,6 +57,6 @@ export function ExecutionCard({
           })}
         </>
       )}
-    </motion.div>
+    </div>
   );
 }

@@ -8,10 +8,6 @@
   "prisma": {
     "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
   },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/J1za/DropHackerRelease"
-  },
   "scripts": {
     "dev": "npm run build:electron && electron .",
     "build": "next build renderer",
@@ -19,7 +15,7 @@
     "dev:desktop": "npm run build:desktop && electron .",
     "build:desktop": "npm run clean && npm run build:electron",
     "dist-win": "npm run build:desktop && electron-builder --win",
-    "dist-osx": "npm run build:desktop && electron-builder --mac --x64",
+    "dist-osx": "electron-builder --mac --x64",
     "dist-linux": "npm run build:desktop && electron-builder --linux --ia32 --x64",
     "clean": "rimraf dist renderer/.next main/*.js main/**/*.js",
     "postinstall": "electron-builder install-app-deps",
@@ -50,7 +46,6 @@
     "ethers": "^5.7.2",
     "feather-icons": "^4.29.0",
     "file-saver": "^2.0.5",
-    "framer-motion": "^10.12.18",
     "lodash": "^4.17.21",
     "next": "13.1.2",
     "postcss": "^8.4.13",
@@ -90,17 +85,18 @@
     "productName": "DropHacker",
     "files": [
       "main/*.js",
-      "renderer",
-      "./prisma/**/*",
-      "./node_modules/react",
-      "./node_modules/.prisma/**/*",
-      "./node_modules/@prisma/client/**/*",
-      "./node_modules/framer-motion",
-      "./node_modules/@fortawesome"
+      "renderer"
     ],
     "extraFiles": [
       "renderer/next.config.js",
       "renderer/db.ts"
+    ],
+    "extraResources": [
+      "prisma/**/*",
+      "node_modules/react",
+      "node_modules/.prisma/**/*",
+      "node_modules/@prisma/client/**/*",
+      "node_modules/@fortawesome"
     ],
     "nsis": {
       "oneClick": false,

@@ -6,7 +6,6 @@ import { BtnPrimary } from "@/components/btns/btnPrimary";
 import { useObjectBool } from "@/hooks/useObjectBool";
 import Spinner from "@/components/spinner";
 import { apiMethodRequest } from "@/utils/apiRequest";
-import { motion } from "framer-motion";
 
 export function ProviderContainer({
   providers,
@@ -29,19 +28,7 @@ export function ProviderContainer({
         );
       })}
 
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{
-          opacity: 1,
-          y: 0,
-          transition: {
-            delay: providers?.length * 0.2,
-            duration: 0.4,
-            ease: "linear",
-          },
-        }}
-        exit={{ opacity: 0, y: -20 }}
-      >
+      <div>
         <BtnPrimary
           prefix={bools.inProgress && <Spinner fill="#fff" color="#fff0" />}
           inProgress={bools.inProgress}
@@ -61,7 +48,7 @@ export function ProviderContainer({
             setBools.inProgress(false);
           }}
         />
-      </motion.div>
+      </div>
     </div>
   );
 }

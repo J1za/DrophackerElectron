@@ -1,4 +1,3 @@
-import { AnimatePresence, motion } from "framer-motion";
 import React from "react";
 
 const variants = {
@@ -31,8 +30,8 @@ const variants = {
 export default function PageWrapper({ children }: any) {
   return (
     <>
-      <AnimatePresence>
-        {/* <motion.div
+      {/* <AnimatePresence>
+       <motion.div
         className="full-width flex flex-1 justify-center"
         // key={asPath}
         variants={variants}
@@ -40,9 +39,10 @@ export default function PageWrapper({ children }: any) {
         animate="inactive"
         exit="fadeOut"
       > */}
-        {children}
-        {/* </motion.div> */}
-      </AnimatePresence>
+
+      {/* </motion.div> 
+      </AnimatePresence> */}
+      {children}
     </>
   );
 }

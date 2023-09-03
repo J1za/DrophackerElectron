@@ -7,7 +7,6 @@ import { UseNestedArrayObject } from "@/hooks/useNestedObjectArray";
 import BtnDelete from "@/components/btns/btnIcons/btnDelete";
 import { ethers } from "ethers";
 import { IAccount } from "@/types";
-import { motion, AnimatePresence } from "framer-motion";
 
 export function AccountItem({
   account,
@@ -40,20 +39,7 @@ export function AccountItem({
 
   // console.log("animateIndex", totalIndex);
   return (
-    <motion.div
-      key={account.address}
-      initial={{ opacity: 0, y: 20 }}
-      animate={{
-        opacity: 1,
-        y: 0,
-      }}
-      exit={{ opacity: 0 }}
-      transition={{
-        delay: index * 0.1,
-        duration: 0.2,
-      }}
-      className="row account"
-    >
+    <div key={account.address} className="row account">
       <div
         className="flex items-center font-bold px-3"
         style={{
@@ -103,6 +89,6 @@ export function AccountItem({
 
       <BtnDelete onClick={onClickDelete} />
       {/* <BtnPrimary text="Delete" /> */}
-    </motion.div>
+    </div>
   );
 }

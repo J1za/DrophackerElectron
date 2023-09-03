@@ -3,11 +3,9 @@ import { IStep } from "@/types";
 import { StepMainInput } from "./parts/StepMainInput";
 import { useDefaultStepValue } from "@/hooks/useDefaultStepValue";
 import { StepArgsInput } from "./parts/StepArgsInput";
-import BtnDelete from "@/components/btns/btnIcons/btnDelete";
 import BtnMove from "@/components/btns/btnIcons/btnMove";
 import BtnDropdown from "@/components/btns/btnDropdown";
 import { EColors } from "../../types/enums/colors";
-import { motion } from "framer-motion";
 
 export function TaskStep({
   step,
@@ -31,20 +29,7 @@ export function TaskStep({
   // const [opt, setOpt] = useState({});
   return (
     <>
-      <motion.div
-        // key={step.stepName + index}
-        // initial={{ opacity: 0, y: 20 }}
-        // animate={{
-        //   opacity: 1,
-        //   y: 0,
-        // }}
-        // exit={{ opacity: 0 }}
-        // transition={{
-        //   delay: index * 0.2,
-        //   duration: .2,
-        // }}
-        className="step"
-      >
+      <div className="step">
         <div className="step-devider" />
         <div className="step-progress circle">
           {index + 1}
@@ -90,7 +75,7 @@ export function TaskStep({
           options={options}
           index={index}
         />
-      </motion.div>
+      </div>
     </>
   );
 }

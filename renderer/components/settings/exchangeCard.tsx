@@ -3,8 +3,6 @@ import Spinner from "@/components/spinner";
 import React, { useEffect, useState } from "react";
 import { debounce } from "lodash";
 import { UseNestedObject } from "@/hooks/useNestedObject";
-import { motion } from "framer-motion";
-import { Exchange } from "@prisma/client";
 import { apiMethodRequest } from "@/utils/apiRequest";
 import { EStatuses, IExchange } from "@/types";
 import IconWatch from "@/components/icons/iconWatch";
@@ -77,16 +75,7 @@ export function ExchangeCard({
   ]);
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{
-        opacity: 1,
-        y: 0,
-        transition: { delay: index * 0.2, duration: 0.4, ease: "linear" },
-      }}
-      exit={{ opacity: 0, y: -20 }}
-      className="card-container settings drop-shadow-lg"
-    >
+    <div className="card-container settings drop-shadow-lg">
       <div className="relative flex flex-inline justify-between items-center">
         <h3 className="font-bold text-xl ml-2 capitalize">{exchange.name}</h3>
 
@@ -174,6 +163,6 @@ export function ExchangeCard({
           {bools.loading && <Spinner fill={color} color="#0000" />} {status}
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 }
