@@ -7,19 +7,23 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const electron_1 = require("electron");
 const electron_is_dev_1 = __importDefault(require("electron-is-dev"));
 const http_1 = require("http");
+const main_1 = __importDefault(require("electron-log/main"));
 const url_1 = require("url");
 const next_1 = __importDefault(require("next"));
+main_1.default.initialize({ preload: true });
 // @ts-ignore
 let updateInterval = null;
 // let updateCheck = false;
 // let updateFound = false;
 // let updateNotAvailable = false;
-const nextApp = (0, next_1.default)({ dev: electron_is_dev_1.default, dir: electron_1.app.getAppPath() + '/renderer' });
-const handle = nextApp.getRequestHandler();
-// Prepare the renderer once the app is ready
 electron_1.app.on('ready', async () => {
+    const nextApp = (0, next_1.default)({
+        dev: electron_is_dev_1.default,
+        dir: electron_1.app.getAppPath() + '/renderer'
+    });
+    const handle = nextApp.getRequestHandler();
+    const port = 3000;
     await nextApp.prepare();
-    const port = 3001;
     (0, http_1.createServer)((req, res) => {
         const parsedUrl = (0, url_1.parse)(req.url, true);
         handle(req, res, parsedUrl);
@@ -36,8 +40,9 @@ electron_1.app.on('ready', async () => {
             contextIsolation: false,
         },
     });
-    mainWindow.setMenu(null);
-    // mainWindow.webContents.openDevTools();
+    if (electron_1.app.isPackaged) {
+        mainWindow.setMenu(null);
+    }
     await mainWindow.loadURL(`http://localhost:${port}`);
     // autoUpdater.checkForUpdates();
     // updateInterval = setInterval(() => autoUpdater.checkForUpdates(), 600000);

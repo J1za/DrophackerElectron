@@ -13,3 +13,4 @@ data
 next-env.d.ts
 # Local DB
 *.db
+app.asar

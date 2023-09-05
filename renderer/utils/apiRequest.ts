@@ -6,7 +6,7 @@ async function handleError(res: Response) {
 }
 
 const defaultGetOptions: RequestInit = { next: { revalidate: 60 } };
-const baseUrl = 'http://localhost:3001'
+const baseUrl = 'http://localhost:3000'
 
 export async function apiGetRequest(
   endpoint: string,

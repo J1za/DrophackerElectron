@@ -1,24 +1,27 @@
 // Packages
 import { BrowserWindow, app } from 'electron'
 import isDev from 'electron-is-dev'
-
 import { createServer } from 'http'
+import log from 'electron-log/main';
 import { parse } from 'url'
 import next from 'next'
 
+log.initialize({ preload: true });
 // @ts-ignore
 let updateInterval = null;
 // let updateCheck = false;
 // let updateFound = false;
 // let updateNotAvailable = false;
-
-const nextApp = next({ dev: isDev, dir: app.getAppPath() + '/renderer' });
-const handle = nextApp.getRequestHandler();
-// Prepare the renderer once the app is ready
 app.on('ready', async () => {
 
+  const nextApp = next({
+    dev: isDev,
+    dir: app.getAppPath() + '/renderer'
+  });
+  const handle = nextApp.getRequestHandler();
+  const port = 3000;
+
   await nextApp.prepare();
-  const port = 3001;
 
   createServer((req: any, res: any) => {
     const parsedUrl = parse(req.url, true)
@@ -38,8 +41,9 @@ app.on('ready', async () => {
     },
   });
 
-  mainWindow.setMenu(null);
-  // mainWindow.webContents.openDevTools();
+  if (app.isPackaged) {
+    mainWindow.setMenu(null);
+  }
   await mainWindow.loadURL(`http://localhost:${port}`);
 
   // autoUpdater.checkForUpdates();

@@ -38,7 +38,7 @@
     "crypto-js": "^4.1.1",
     "dotenv": "^16.3.1",
     "electron-is-dev": "^1.1.0",
-    "electron-log": "^4.4.8",
+    "electron-log": "^5.0.0-beta.28",
     "electron-next": "^3.1.5",
     "electron-serve": "^1.1.0",
     "electron-store": "^8.1.0",
@@ -85,18 +85,34 @@
     "productName": "DropHacker",
     "files": [
       "main/*.js",
-      "renderer"
+      "renderer",
+      "!renderer/abi",
+      "!renderer/components",
+      "!renderer/hooks",
+      "!renderer/pages",
+      "!renderer/providers",
+      "!renderer/public",
+      "!renderer/styles",
+      "!renderer/types",
+      "!renderer/utils",
+      "!renderer/worker.ts",
+      "!renderer/tsconfig.json",
+      "!renderer/tailwind.config.js",
+      "!renderer/postcss.config.js"
     ],
+    "includeSubNodeModules": true,
     "extraFiles": [
       "renderer/next.config.js",
       "renderer/db.ts"
     ],
     "extraResources": [
-      "prisma/**/*",
-      "node_modules/react",
       "node_modules/.prisma/**/*",
       "node_modules/@prisma/client/**/*",
-      "node_modules/@fortawesome"
+      "node_modules/@fortawesome",
+      {
+        "from": "prisma",
+        "to": "prisma"
+      }
     ],
     "nsis": {
       "oneClick": false,
