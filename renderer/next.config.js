@@ -3,6 +3,7 @@
  */
 const nextConfig = {
   compress: true,
+  assetPrefix: ".",
 };
 
 module.exports = nextConfig;

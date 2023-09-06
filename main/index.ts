@@ -1,17 +1,20 @@
 // Packages
-import { BrowserWindow, app } from 'electron'
-import isDev from 'electron-is-dev'
-import { createServer } from 'http'
+import { BrowserWindow, app, dialog } from 'electron';
+import { autoUpdater } from 'electron-updater';
+import isDev from 'electron-is-dev';
+import { createServer } from 'http';
 import log from 'electron-log/main';
-import { parse } from 'url'
-import next from 'next'
+import { parse } from 'url';
+import next from 'next';
+
+log.transports.file.level = "debug"
+autoUpdater.logger = log;
 
 log.initialize({ preload: true });
 // @ts-ignore
 let updateInterval = null;
-// let updateCheck = false;
-// let updateFound = false;
-// let updateNotAvailable = false;
+let updateCheck = false;
+
 app.on('ready', async () => {
 
   const nextApp = next({
@@ -23,12 +26,25 @@ app.on('ready', async () => {
 
   await nextApp.prepare();
 
-  createServer((req: any, res: any) => {
-    const parsedUrl = parse(req.url, true)
-    handle(req, res, parsedUrl)
-  }).listen(port, () => {
-    console.log(`> Ready on http://localhost:${port}`)
+  createServer(async (req, res) => {
+    try {
+      const parsedUrl = parse(req.url!, true)
+      handle(req, res, parsedUrl)
+
+    } catch (err) {
+      log.info('Error occurred handling', err);
+      console.error('Error occurred handling', req.url, err)
+      res.statusCode = 500
+      res.end('internal server error')
+    }
   })
+    .once('error', (err) => {
+      console.error(err)
+      log.info('Error', err);
+    })
+    .listen(port, () => {
+      console.log(`> Ready on http://localhost:${port}`)
+    })
 
   const mainWindow = new BrowserWindow({
     minWidth: 800,
@@ -46,52 +62,47 @@ app.on('ready', async () => {
   }
   await mainWindow.loadURL(`http://localhost:${port}`);
 
-  // autoUpdater.checkForUpdates();
-  // updateInterval = setInterval(() => autoUpdater.checkForUpdates(), 600000);
+  autoUpdater.checkForUpdatesAndNotify();
+  updateInterval = setInterval(() => autoUpdater.checkForUpdatesAndNotify(), 600000);
 });
 
-// autoUpdater.on("update-available", (_event) => {
-//   const dialogOpts = {
-//     type: 'info',
-//     buttons: ['Ok'],
-//     title: `Update Available`,
-//     detail: `A new version should download started or check telegram channel`
-//   } as any;
+autoUpdater.on("update-available", (_event) => {
+  const dialogOpts = {
+    type: 'info',
+    buttons: ['Ok'],
+    title: `Update Available`,
+    detail: `A new version download started`
+  } as any;
 
-//   if (!updateCheck) {
-//     updateInterval = null;
-//     dialog.showMessageBox(dialogOpts);
-//     autoUpdater.quitAndInstall();
-//     updateCheck = true;
-//   }
-// });
+  if (!updateCheck) {
+    updateInterval = null;
+    dialog.showMessageBox(dialogOpts);
+    autoUpdater.quitAndInstall();
+    updateCheck = true;
+  }
+});
 
-// autoUpdater.on("update-downloaded", (_event) => {
-//   const dialogOpts = {
-//     type: "info",
-//     buttons: ["Restart", "Later"],
-//     title: "Application Update",
-//     detail: "A new version has been downloaded. Restart the application to apply the updates."
-//   } as any;
-//   dialog.showMessageBox(dialogOpts);
-//   if (!updateFound) {
-//     updateInterval = null;
-//     updateFound = true;
-
-//     setTimeout(() => {
-//       autoUpdater.quitAndInstall();
-//     }, 3500);
-//   }
-// });
+autoUpdater.on("update-downloaded", (_event) => {
+  const dialogOpts = {
+    type: "question",
+    buttons: ["Install and Restart", "Later"],
+    defaultId: 0,
+    message: "A new update has been downloaded. Would you like to install and restart the app now?"
+  } as any;
+  dialog.showMessageBox(dialogOpts).then(selection => {
+    if (selection.response === 0) {
+      autoUpdater.quitAndInstall();
+    }
+  });;
+});
 
 // autoUpdater.on('download-progress', (progressObj) => {
 //   const dialogOpts = {
 //     type: "info",
 //     buttons: ["Ok"],
-//     title: 'Download speed: ' + progressObj.bytesPerSecond,
 //     detail: 'Downloaded ' + progressObj.percent + '%'
 //   } as any;
-//   dialog.showMessageBox(dialogOpts);
+//   // dialog.showMessageBox(dialogOpts);
 // })
 
 // autoUpdater.on("update-not-available", (_event) => {

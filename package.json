@@ -1,16 +1,24 @@
 {
-  "private": true,
   "name": "drophacker",
   "description": "Drophacker",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "author": "Vitaliy Stukalo <workinvs@gmail.com>",
   "main": "main/index.js",
   "prisma": {
     "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/J1za/DropHackerRelease/"
+  },
+  "publish": {
+    "provider": "github",
+    "releaseType": "release"
+  },
   "scripts": {
     "dev": "npm run build:electron && electron .",
     "build": "next build renderer",
+    "export": "next export renderer",
     "start": "next start renderer",
     "dev:desktop": "npm run build:desktop && electron .",
     "build:desktop": "npm run clean && npm run build:electron",
@@ -24,15 +32,12 @@
     "build:electron": "npm run build:renderer && npm run build:main"
   },
   "dependencies": {
-    "@fortawesome/fontawesome-svg-core": "^6.4.0",
-    "@fortawesome/free-regular-svg-icons": "^6.4.0",
-    "@fortawesome/free-solid-svg-icons": "^6.4.0",
+    "@fortawesome/fontawesome-svg-core": "^6.4.2",
+    "@fortawesome/free-regular-svg-icons": "^6.4.2",
+    "@fortawesome/free-solid-svg-icons": "^6.4.2",
     "@fortawesome/react-fontawesome": "^0.2.0",
     "@prisma/client": "^4.13.0",
     "@typechain/ethers-v5": "^11.0.0",
-    "@types/node": "20.3.1",
-    "@types/react": "18.2.12",
-    "@types/react-dom": "18.2.5",
     "autoprefixer": "^10.4.7",
     "axios": "^1.2.3",
     "crypto-js": "^4.1.1",
@@ -42,7 +47,7 @@
     "electron-next": "^3.1.5",
     "electron-serve": "^1.1.0",
     "electron-store": "^8.1.0",
-    "electron-updater": "^5.3.0",
+    "electron-updater": "^4.6.1",
     "ethers": "^5.7.2",
     "feather-icons": "^4.29.0",
     "file-saver": "^2.0.5",
@@ -50,7 +55,6 @@
     "next": "13.1.2",
     "postcss": "^8.4.13",
     "postcss-nested": "^6.0.1",
-    "prisma": "^4.13.0",
     "react": "18.2.0",
     "react-dom": "^18.2.0",
     "react-markdown": "^8.0.5",
@@ -70,14 +74,15 @@
     "@tailwindcss/typography": "^0.5.9",
     "@types/formidable": "^2.0.5",
     "@types/lodash": "^4.14.191",
-    "@types/node": "^18.11.18",
+    "@types/node": "^18.7.14",
     "@types/pdf-parse": "^1.1.1",
-    "@types/react": "18.0.27",
-    "@types/react-dom": "18.0.10",
+    "@types/react": "18.2.12",
+    "@types/react-dom": "18.2.5",
     "electron": "^26.0.0",
     "electron-builder": "^23.6.0",
     "eslint": "8.32.0",
     "eslint-config-next": "13.1.2",
+    "prisma": "^4.13.0",
     "typescript": "^4.9.4"
   },
   "build": {
@@ -108,7 +113,7 @@
     "extraResources": [
       "node_modules/.prisma/**/*",
       "node_modules/@prisma/client/**/*",
-      "node_modules/@fortawesome",
+      "node_modules/@fortawesome/**/*",
       {
         "from": "prisma",
         "to": "prisma"
@@ -121,6 +126,7 @@
       "allowToChangeInstallationDirectory": true,
       "deleteAppDataOnUninstall": true,
       "createDesktopShortcut": true,
+      "artifactName": "DropHacker-Setup.${ext}",
       "installerIcon": "build/icon.ico",
       "uninstallerIcon": "build/icon.ico"
     },
@@ -139,10 +145,11 @@
       }
     },
     "win": {
+      "target": "nsis",
       "publish": [
         "github"
       ],
-      "icon": "public/images/logo.ico"
+      "icon": "build/icon.ico"
     },
     "linux": {
       "target": [
